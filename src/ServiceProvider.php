@@ -22,10 +22,9 @@ class ServiceProvider extends LaravelServiceProvider
             __DIR__.'/config/wallet_manager.php'=>config_path('wallet_manager.php')
         ], 'wallet-manager-config');
 
-        $this->loadMigrationsFrom(__DIR__.'/migrations/');
-//        $this->publishes([
-//            __DIR__.'/migrations/' => database_path('migrations')
-//        ], 'migrations');
+        $this->publishes([
+            __DIR__.'/migrations/' => database_path('migrations')
+        ], 'wallet-manager-migrations');
 
     }
 
