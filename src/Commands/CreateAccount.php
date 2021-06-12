@@ -12,6 +12,7 @@ use Ashrafi\WalletManager\Facades\AccountModel;
 use Ashrafi\WalletManager\Facades\CurrencyModel;
 use Ashrafi\WalletManager\Models\Account;
 use Ashrafi\WalletManager\Models\Wallet;
+use Ashrafi\WalletManager\ValueObjects\WalletCurrency;
 use Illuminate\Support\Facades\DB;
 
 class CreateAccount extends AccountCommand
@@ -77,7 +78,7 @@ class CreateAccount extends AccountCommand
         $wallet = (new CreateWallet(false))->handle($walletData, $transactional);
         if(!$wallet){
             $this->addMessage("Can't create wallet or find it for user: {user_id}", ['user_id'=>$account->user_id, 'account_id'=>$account->id], 'error');
-            throw new CommandException(last($this->getMessages('error')));
+            throw new CommandException(last($this->getMessages('error'))["message"]);
         }
         return $wallet;
     }
@@ -94,7 +95,7 @@ class CreateAccount extends AccountCommand
         if(!isset($attributes['user_id'])){
             throw new CommandException("Account user_id can't be null!");
         }
-        if(isset($attributes['currencies']) && isset(array_values($attributes['currencies'])[0][0])){
+        if(isset($attributes['currencies']) && !isset(array_values($attributes['currencies'])[0])){
             throw new CommandException("Invalid currencies to create account!");
         }
 
@@ -102,7 +103,7 @@ class CreateAccount extends AccountCommand
 
     /**
      * @param array $attributes
-     * @return AccountModel|null
+     * @return Account|null
      */
     protected function findOrCreateAccount(array $attributes)
     {
@@ -128,19 +129,20 @@ class CreateAccount extends AccountCommand
     protected function createCurrenciesWallet(array $attributes, Account $account, $transactional = false)
     {
         if (empty($attributes['currencies'])) {
-            $attributes['currencies'] = [['symbol' => CurrencyModel::defaultSymbol()]];
+            $attributes['currencies'] = [new WalletCurrency(CurrencyModel::defaultSymbol())];
         }
         $walletData = [
             'user_id' => $account->user_id,
             'account_id' => $account->id,
         ];
+        /** @var WalletCurrency $currency */
         foreach ($attributes['currencies'] as $currency) {
-            $walletData['currency_id'] = $currency['currency_id'] ?? null;
-            $walletData['symbol'] = $currency['symbol'] ?? null;
+            $walletData['currency_id'] = $currency->currency_id;
+            $walletData['symbol'] = $currency->symbol;
             if (isset($attributes['balance'])) {
                 $walletData['balance'] = $attributes['balance'];
-            } elseif (isset($currency['balance'])) {
-                $walletData['balance'] = $currency['balance'];
+            } elseif ($currency->balance) {
+                $walletData['balance'] = $currency->balance;
             }
             $this->createWallet($account, $walletData, $transactional);
         }

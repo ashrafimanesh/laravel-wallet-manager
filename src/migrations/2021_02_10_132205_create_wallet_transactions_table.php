@@ -18,7 +18,7 @@ class CreateWalletTransactionsTable extends Migration
     public function up()
     {
         Schema::create(WalletTransactionModel::getTable(), function (Blueprint $table) {
-            $userTableName = (new \App\User())->getTable();
+            $userTableName = app(\Ashrafi\WalletManager\Contracts\iUser::class)->getTable();
 
             $table->id();
 

@@ -4,7 +4,7 @@
 namespace Ashrafi\WalletManager\Models;
 
 
-use App\User;
+use Ashrafi\WalletManager\Contracts\iUser as User;
 use Ashrafi\WalletManager\Facades\CurrencyModel;
 use Ashrafi\WalletManager\Facades\WalletModel;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * @property mixed user_id
  * @property array|mixed wallets
- * @method static Builder whereUnique(array|mixed $attributes)
+ * @method static Builder whereUnique(mixed $attributes)
  * @property mixed config
  * @property mixed type
  */

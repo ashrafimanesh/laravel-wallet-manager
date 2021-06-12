@@ -4,7 +4,7 @@
 namespace Ashrafi\WalletManager\Commands;
 
 
-use App\User;
+use Ashrafi\WalletManager\Contracts\iUser as User;
 use Ashrafi\WalletManager\Models\Model;
 use Carbon\Carbon;
 

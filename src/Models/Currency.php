@@ -10,7 +10,7 @@ namespace Ashrafi\WalletManager\Models;
 class Currency extends Model
 {
 
-    const DEFAULT = 'usd';
+    const DEFAULT_SYMBOL = 'usd';
 
     protected $fillable = [
         'symbol',
@@ -19,7 +19,7 @@ class Currency extends Model
 
     public static function defaultSymbol()
     {
-        return config('wallet_manager.currency.default', self::DEFAULT);
+        return config('wallet_manager.currency.default', self::DEFAULT_SYMBOL);
     }
 
     public function scopeActive($builder){

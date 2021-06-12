@@ -4,12 +4,12 @@
 namespace Ashrafi\WalletManager\Commands;
 
 
+use Ashrafi\WalletManager\Contracts\iRelatedTransactionTypeValidate;
 use Ashrafi\WalletManager\Events\WalletBalanceChanged;
 use Ashrafi\WalletManager\Exceptions\CommandException;
+use Ashrafi\WalletManager\Exceptions\NoEnoughBalanceException;
 use Ashrafi\WalletManager\Exceptions\TransactionValidatorException;
 use Ashrafi\WalletManager\Facades\TransactionTypeModel;
-use Ashrafi\WalletManager\Facades\WalletModel;
-use Ashrafi\WalletManager\Facades\WalletTransactionModel;
 use Ashrafi\WalletManager\Models\TransactionType;
 use Ashrafi\WalletManager\Models\WalletTransaction;
 use Ashrafi\WalletManager\ValueObjects\TransactionAmount;
@@ -32,7 +32,9 @@ class ChangeWalletBalance extends WalletCommand
 
         $transactionData = $this->makeTransactionData($transactionAmount, $wallet);
 
-        $transactionType = $this->validate($transactionAmount, $transactionData);
+        $wallet = $wallet->recalculateBalance();
+
+        $transactionType = $this->validate($wallet, $transactionAmount, $transactionData);
 
         if ($transactional) {
             DB::beginTransaction();
@@ -60,13 +62,14 @@ class ChangeWalletBalance extends WalletCommand
     }
 
     /**
+     * @param Wallet $wallet
      * @param TransactionAmount $transactionAmount
      * @param array $transactionData
      * @return TransactionType|null
      * @throws CommandException
-     * @throws TransactionValidatorException
+     * @throws NoEnoughBalanceException
      */
-    protected function validate(TransactionAmount $transactionAmount, array $transactionData)
+    protected function validate(Wallet $wallet, TransactionAmount $transactionAmount, array $transactionData)
     {
         if (!$transactionAmount->type) {
             throw new CommandException('Undefined transaction type!');
@@ -74,13 +77,21 @@ class ChangeWalletBalance extends WalletCommand
         if (!$transactionAmount->status) {
             throw new CommandException('Undefined transaction status!');
         }
+
+        if($transactionAmount->amount < 0){
+            if($wallet->credit - abs($transactionAmount->amount) <= config('wallet_manager.wallet.minimum_balance', 0)){
+                throw new NoEnoughBalanceException();
+            }
+        }
+
         $transactionType = TransactionTypeModel::active()->whereType($transactionAmount->type)->first();
         if (!($transactionType instanceof TransactionType)) {
             throw new CommandException('Invalid transaction type!');
         }
+
         $validator = $transactionType->getValidator();
-        if ($validator) {
-            $validator->validate($transactionData);
+        if ($validator && ($validator instanceof iRelatedTransactionTypeValidate)) {
+            $validator->validateRecord($transactionData);
         }
 
         return $transactionType;

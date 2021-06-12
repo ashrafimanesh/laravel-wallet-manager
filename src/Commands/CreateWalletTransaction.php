@@ -22,6 +22,8 @@ class CreateWalletTransaction extends Command
      */
     public function handle(Wallet $wallet, TransactionType $transactionType, array $transactionData, bool $transactional = true)
     {
+
+
         if($transactional){
             DB::beginTransaction();
         }

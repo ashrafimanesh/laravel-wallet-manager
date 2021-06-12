@@ -4,7 +4,7 @@
 namespace Ashrafi\WalletManager\Facades;
 
 
-use App\User;
+use Ashrafi\WalletManager\Contracts\iUser as User;
 use Ashrafi\WalletManager\Models\Account;
 use Ashrafi\WalletManager\Models\TransactionType;
 use Ashrafi\WalletManager\Models\Wallet;
@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Collection;
  * @method static mixed find(mixed $id)
  * @method static WalletTransaction|null create(array $attributes)
  * @method static string getTable()
+ * @method static WalletTransaction|null first()
  * @method static Builder|WalletTransactionModel whereReference($reference)
  * @method static Builder|WalletTransactionModel whereReferenceType(string $referenceType)
  * @method static Builder|WalletTransactionModel whereReferenceId($referenceId)

@@ -4,7 +4,6 @@
 namespace Ashrafi\WalletManager\Facades;
 
 
-use App\User;
 use Ashrafi\WalletManager\Models\Account;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;

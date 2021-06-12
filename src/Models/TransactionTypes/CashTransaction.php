@@ -4,7 +4,10 @@
 namespace Ashrafi\WalletManager\Models\TransactionTypes;
 
 
-use App\User;
+use Ashrafi\WalletManager\Contracts\iRelatedTransactionTypeCreateRecord;
+use Ashrafi\WalletManager\Contracts\iRelatedTransactionTypeValidate;
+use Ashrafi\WalletManager\Contracts\iUser as User;
+use Ashrafi\WalletManager\Exceptions\CashValidatorException;
 use Ashrafi\WalletManager\Facades\WalletModel;
 use Ashrafi\WalletManager\Models\Model;
 use Ashrafi\WalletManager\Models\WalletTransaction;
@@ -13,7 +16,7 @@ use Illuminate\Support\Arr;
 /**
  * @property mixed changed_by
  */
-class CashTransaction extends Model
+class CashTransaction extends Model implements iRelatedTransactionTypeCreateRecord, iRelatedTransactionTypeValidate
 {
 
     protected $fillable = [
@@ -47,7 +50,7 @@ class CashTransaction extends Model
         $this->save();
     }
 
-    public function createRecord($data){
+    public function createRecord(array $data = null){
         return static::create(Arr::only($data, $this->fillable) + ['payload'=>Arr::except($data, $this->fillable)]);
     }
 
@@ -59,4 +62,13 @@ class CashTransaction extends Model
         return config('wallet_manager.database.prefix')."cash_transactions";
     }
 
+    public function validateRecord($data = null)
+    {
+        if(!isset($data['user_id'])){
+            throw new CashValidatorException('User id can\t be null in cash transaction');
+        }
+        if(!isset($data['wallet_id'])){
+            throw new CashValidatorException('Wallet id can\t be null in cash transaction');
+        }
+    }
 }

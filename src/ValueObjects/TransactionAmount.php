@@ -14,6 +14,13 @@ class TransactionAmount
     public $data = [];
     public $status = WalletTransaction::STATUS_PENDING;
 
+    public function __construct($amount = 0, $type = TransactionType::TYPE_CASH, $status = WalletTransaction::STATUS_PENDING)
+    {
+        $this->amount = $amount;
+        $this->type = $type;
+        $this->status = $status;
+    }
+
     /**
      * @return array
      */

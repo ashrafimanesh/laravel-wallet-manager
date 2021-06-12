@@ -18,7 +18,7 @@ class CreateTransferTransactionsTable extends Migration
     public function up()
     {
         Schema::create(TransferTransactionModel::getTable(), function (Blueprint $table) {
-            $user = new \App\User();
+            $user = app(\Ashrafi\WalletManager\Contracts\iUser::class);
             $table->id();
 
             $table->unsignedBigInteger('user_id');

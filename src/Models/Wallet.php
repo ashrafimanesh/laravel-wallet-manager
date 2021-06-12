@@ -4,13 +4,14 @@
 namespace Ashrafi\WalletManager\Models;
 
 
-use App\User;
+use Ashrafi\WalletManager\Contracts\iUser as User;
 use Ashrafi\WalletManager\Facades\AccountModel;
 use Ashrafi\WalletManager\Facades\CurrencyModel;
 use Ashrafi\WalletManager\Facades\WalletModel;
 use Ashrafi\WalletManager\Facades\WalletTransactionModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property mixed balance
@@ -131,6 +132,18 @@ class Wallet extends Model
         }
         $this->config[$key] = $value;
         return $this;
+    }
+
+    /**
+     * @return Wallet
+     */
+    public function recalculateBalance()
+    {
+        $walletTransactionClass = WalletTransactionModel::getClass();
+        $balance = $walletTransactionClass::staticCalcTotalBalance($this->id);
+        WalletModel::query()->where('id', $this->id)->update(['balance' => $balance]);
+        return WalletModel::find($this->id);
+
     }
 
 }

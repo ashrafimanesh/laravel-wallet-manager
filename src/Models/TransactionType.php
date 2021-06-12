@@ -4,16 +4,13 @@
 namespace Ashrafi\WalletManager\Models;
 
 
-use Ashrafi\WalletManager\Facades\TransactionTypes\BankReceiptTransactionModel;
-use Ashrafi\WalletManager\Facades\TransactionTypes\CashTransactionModel;
-use Ashrafi\WalletManager\Facades\TransactionTypes\TransferTransactionModel;
+use Ashrafi\WalletManager\Contracts\iRelatedTransactionTypeCreateRecord;
+use Ashrafi\WalletManager\Contracts\iRelatedTransactionTypeValidate;
+use Ashrafi\WalletManager\Factories\TransactionTypeFactory;
 use Ashrafi\WalletManager\Models\TransactionTypes\BankReceiptTransaction;
 use Ashrafi\WalletManager\Models\TransactionTypes\CashTransaction;
 use Ashrafi\WalletManager\Models\TransactionTypes\TransferTransaction;
-use Ashrafi\WalletManager\Validators\BankFishValidator;
-use Ashrafi\WalletManager\Validators\CashValidator;
 use Ashrafi\WalletManager\Validators\iValidator;
-use Ashrafi\WalletManager\Validators\TransferValidator;
 
 /**
  * @property mixed type
@@ -51,14 +48,13 @@ class TransactionType extends Model
      * @return iValidator|null
      */
     public static function staticGetValidator($type){
-        switch ($type){
-            case self::TYPE_BANK_RECEIPT:
-                return app(BankFishValidator::class);
-            case self::TYPE_CASH:
-                return app(CashValidator::class);
-            case self::TYPE_TRANSFER:
-                return app(TransferValidator::class);
+        /** @var TransactionTypeFactory $factory */
+        $factory = app(TransactionTypeFactory::class);
+        $handler = $factory->make($type);
+        if(!$handler || !($handler instanceof iRelatedTransactionTypeValidate)){
+            return null;
         }
+        return $handler;
     }
 
     /**
@@ -67,14 +63,13 @@ class TransactionType extends Model
      */
     public function createReference(array $data = null)
     {
-        switch ($this->type){
-            case self::TYPE_BANK_RECEIPT:
-                return BankReceiptTransactionModel::createRecord($data);
-            case self::TYPE_CASH:
-                return CashTransactionModel::createRecord($data);
-            case self::TYPE_TRANSFER:
-                return TransferTransactionModel::createRecord($data);
+        /** @var TransactionTypeFactory $factory */
+        $factory = app(TransactionTypeFactory::class);
+        $handler = $factory->make($this->type);
+        if(!$handler || !($handler instanceof iRelatedTransactionTypeCreateRecord)){
+            return null;
         }
+        return $handler->createRecord($data);
     }
 
 }

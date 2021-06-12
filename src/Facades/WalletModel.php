@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Collection;
  * @method static Builder|WalletModel whereCurrency($currencyId)
  * @method static string defaultStatus()
  * @method double walletBalance($symbol = null)
+ * @method null recalculateBalance()
  * @property mixed balance
  * @property mixed user_id
  * @property mixed account_id

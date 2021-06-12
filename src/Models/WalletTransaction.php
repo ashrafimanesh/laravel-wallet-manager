@@ -4,7 +4,7 @@
 namespace Ashrafi\WalletManager\Models;
 
 
-use App\User;
+use Ashrafi\WalletManager\Contracts\iUser as User;
 use Ashrafi\WalletManager\Facades\AccountModel;
 use Ashrafi\WalletManager\Facades\TransactionTypeModel;
 use Ashrafi\WalletManager\Facades\WalletModel;
@@ -111,8 +111,7 @@ class WalletTransaction extends Model
 
     public function calcTotalBalance()
     {
-        $obj = WalletTransactionModel::approved()->where(['wallet_id' => $this->wallet_id])->select(DB::raw('SUM(amount) as total_amount'))->first();
-        return $obj ? ($obj->total_amount ?: 0) : 0;
+        return static::staticCalcTotalBalance($this->wallet_id);
     }
 
     public function isApproved()
@@ -131,6 +130,12 @@ class WalletTransaction extends Model
         $payload[$field] = $value;
         $this->payload = $payload;
         return $this;
+    }
+
+    public static function staticCalcTotalBalance($walletId)
+    {
+        $obj = WalletTransactionModel::approved()->where(['wallet_id' => $walletId])->select(DB::raw('SUM(amount) as total_amount'))->first();
+        return $obj ? ($obj->total_amount ?: 0) : 0;
     }
 
 }

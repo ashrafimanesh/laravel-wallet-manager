@@ -4,9 +4,13 @@
 namespace Ashrafi\WalletManager\Models\TransactionTypes;
 
 
-use App\User;
+use Ashrafi\WalletManager\Contracts\iRelatedTransactionTypeCreateRecord;
+use Ashrafi\WalletManager\Contracts\iRelatedTransactionTypeValidate;
+use Ashrafi\WalletManager\Contracts\iUser as User;
+use Ashrafi\WalletManager\Exceptions\BankFishValidatorException;
 use Ashrafi\WalletManager\Facades\WalletModel;
 use Ashrafi\WalletManager\Models\Model;
+use Ashrafi\WalletManager\Models\TransactionType;
 use Ashrafi\WalletManager\Models\WalletTransaction;
 use Illuminate\Support\Arr;
 
@@ -15,7 +19,7 @@ use Illuminate\Support\Arr;
  * @property mixed changed_by
  * @package Ashrafi\WalletManager\Models
  */
-class BankReceiptTransaction extends Model
+class BankReceiptTransaction extends Model implements iRelatedTransactionTypeCreateRecord, iRelatedTransactionTypeValidate
 {
 
     protected $fillable = [
@@ -49,7 +53,7 @@ class BankReceiptTransaction extends Model
         $this->save();
     }
 
-    public function createRecord($data){
+    public function createRecord(array $data = null){
         return static::create(Arr::only($data, $this->fillable) + ['payload'=>Arr::except($data, $this->fillable)]);
     }
 
@@ -61,4 +65,16 @@ class BankReceiptTransaction extends Model
         return config('wallet_manager.database.prefix')."bank_receipt_transactions";
     }
 
+    public function validateRecord($data = null)
+    {
+        if(!isset($data['bank_name'])){
+            throw new BankFishValidatorException('Bank name can\t be null in bank_receipt transaction');
+        }
+        if(!isset($data['user_id'])){
+            throw new BankFishValidatorException('User id can\t be null in bank_receipt transaction');
+        }
+        if(!isset($data['wallet_id'])){
+            throw new BankFishValidatorException('Wallet id can\t be null in bank_receipt transaction');
+        }
+    }
 }

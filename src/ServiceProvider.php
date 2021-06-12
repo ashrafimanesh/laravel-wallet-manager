@@ -4,6 +4,7 @@
 namespace Ashrafi\WalletManager;
 
 
+use Ashrafi\WalletManager\Contracts\iUser;
 use Ashrafi\WalletManager\Models\Account;
 use Ashrafi\WalletManager\Models\TransactionTypes\BankReceiptTransaction;
 use Ashrafi\WalletManager\Models\TransactionTypes\CashTransaction;
@@ -21,15 +22,29 @@ class ServiceProvider extends LaravelServiceProvider
         $this->publishes([
             __DIR__.'/config/wallet_manager.php'=>config_path('wallet_manager.php')
         ], 'wallet-manager-config');
-
         $this->publishes([
-            __DIR__.'/migrations/' => database_path('migrations')
-        ], 'wallet-manager-migrations');
+            __DIR__.'/seeders/CurrencySeeder.php'=>database_path('seeders/CurrencySeeder.php'),
+            __DIR__.'/seeders/TransactionTypeSeeder.php'=>database_path('seeders/TransactionTypeSeeder.php')
+        ], 'wallet-manager-seeder');
+
+        $this->loadMigrationsFrom([
+            __DIR__.'/migrations/'
+        ]);
 
     }
 
     public function register()
     {
+        $this->app->bind(iUser::class, function(){
+            $userClasses = ['App\User', 'App\Models\User'];
+            foreach($userClasses as $class){
+                if(class_exists($class)){
+                    return new $class;
+                }
+            }
+            throw new \Exception("User class not found please bind iUser::class to a user model!");
+        });
+
         $this->app->bind(Wallet::class, function(){
             return new Wallet();
         });

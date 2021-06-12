@@ -14,6 +14,7 @@ class CreateWalletCommandLogsTable extends Migration
     public function up()
     {
         Schema::create((new \Ashrafi\WalletManager\Models\CommandLogs())->getTable(), function (Blueprint $table) {
+            $userTableName = app(\Ashrafi\WalletManager\Contracts\iUser::class)->getTable();
             $table->id();
             $table->morphs('model');
 
@@ -21,7 +22,7 @@ class CreateWalletCommandLogsTable extends Migration
             $table->longText('entity_data');
 
             $table->unsignedBigInteger('owner_id')->nullable();
-            $table->foreign('owner_id')->references('id')->on((new \App\User())->getTable());
+            $table->foreign('owner_id')->references('id')->on($userTableName);
 
             $table->timestamps();
         });

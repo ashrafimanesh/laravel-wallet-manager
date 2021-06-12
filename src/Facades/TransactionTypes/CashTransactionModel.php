@@ -4,7 +4,7 @@
 namespace Ashrafi\WalletManager\Facades\TransactionTypes;
 
 
-use App\User;
+use Ashrafi\WalletManager\Contracts\iUser as User;
 use Ashrafi\WalletManager\Facades\Facade;
 use Ashrafi\WalletManager\Models\TransactionTypes\CashTransaction;
 use Ashrafi\WalletManager\Models\Wallet;
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Collection;
  * @method static mixed find(mixed $id)
  * @method static CashTransaction|null create(array $attributes)
  * @method static string getTable()
- * @method static CashTransaction|null createRecord(array|null $data)
+ * @method static CashTransaction|null createRecord(array $data = null)
  * @property User|null $user
  * @property User|null $creator
  * @property Wallet|null $wallet

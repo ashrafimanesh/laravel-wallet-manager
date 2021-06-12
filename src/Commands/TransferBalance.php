@@ -17,17 +17,6 @@ class TransferBalance extends Command
 {
 
     /**
-     * @var bool|mixed
-     */
-    protected $checkCredit;
-
-    public function __construct($checkCredit = true, $dispatchEvent = true)
-    {
-        $this->checkCredit = $checkCredit;
-        parent::__construct($dispatchEvent);
-    }
-
-    /**
      * @param Wallet $fromWallet
      * @param Wallet $toWallet
      * @param TransactionAmount $fromAmount
@@ -40,11 +29,6 @@ class TransferBalance extends Command
      */
     public function handle(Wallet $fromWallet, Wallet $toWallet, TransactionAmount $fromAmount, TransactionAmount $toAmount, $transactional = true)
     {
-        if($this->checkCredit){
-            if($fromWallet->credit < $fromAmount->amount){
-                throw new NoEnoughBalanceException();
-            }
-        }
         if($transactional){
             DB::beginTransaction();
         }
