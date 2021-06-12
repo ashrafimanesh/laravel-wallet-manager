@@ -12,7 +12,7 @@ php: >=7.1
 ### Installation
 
 ```php
-composer require ashrafi/wallet-manager:^v0.1
+composer require ashrafi/laravel-wallet:^v0.1
 ```
 if you want to publish config you can run:
 ```php
@@ -112,7 +112,7 @@ Each transaction can has seperate table for store related transaction data and v
 2. create new `model/class` for it and implement `iRelatedTransactionTypeValidate` class to validate transaction data and implement `iRelatedTransactionTypeCreateRecord` to insert transaction data to your table.
 3. add new type to `wallet_manager.transaction_types.types` config file.
 
-**Important transcation types**
+**Important transaction types**
 1. `init`: This type already is defined and used on create new wallet with init balance.
 2. `transfer`: This type already is defined and used on transfer a amount from a wallet to an other wallet.
 3. `cash`: This type already is defined and used on charge or withdraw a cash amount without any extra data. We suggest to you define a new type to handle charge/withdraw transaction to store related data

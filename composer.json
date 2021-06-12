@@ -1,5 +1,5 @@
 {
-  "name": "ashrafi/wallet",
+  "name": "ashrafi/laravel-wallet",
   "description": "Laravel wallet manager.",
   "keywords": ["laravel", "ui"],
   "license": "MIT",
