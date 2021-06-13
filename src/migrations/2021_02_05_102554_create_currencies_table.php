@@ -14,7 +14,7 @@ class CreateCurrenciesTable extends Migration
     public function up()
     {
         Schema::create(\Ashrafi\WalletManager\Facades\CurrencyModel::getTable(), function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('symbol', 8)->unique();
             $table->tinyInteger('status')->default(\Ashrafi\WalletManager\Models\Currency::STATUS_ACTIVE);
             $table->timestamps();
