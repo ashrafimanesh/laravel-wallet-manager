@@ -19,7 +19,7 @@ class CreateWalletsTable extends Migration
         Schema::create(WalletModel::getTable(), function (Blueprint $table) {
             $userTableName = app(\Ashrafi\WalletManager\Contracts\iUser::class)->getTable();
 
-            $table->id();
+            $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on($userTableName);
 

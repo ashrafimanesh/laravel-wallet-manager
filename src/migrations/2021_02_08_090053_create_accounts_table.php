@@ -16,7 +16,7 @@ class CreateAccountsTable extends Migration
     {
         Schema::create(AccountModel::getTable(), function (Blueprint $table) {
             $userTableName = app(\Ashrafi\WalletManager\Contracts\iUser::class)->getTable();
-            $table->id();
+            $table->bigIncrements('id');
 
             $table->string('name', 128);
             $table->string('label', 128)->nullable();

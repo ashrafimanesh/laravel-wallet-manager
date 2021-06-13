@@ -15,7 +15,7 @@ class CreateWalletCommandLogsTable extends Migration
     {
         Schema::create((new \Ashrafi\WalletManager\Models\CommandLogs())->getTable(), function (Blueprint $table) {
             $userTableName = app(\Ashrafi\WalletManager\Contracts\iUser::class)->getTable();
-            $table->id();
+            $table->bigIncrements('id');
             $table->morphs('model');
 
             $table->string('entity_type');
