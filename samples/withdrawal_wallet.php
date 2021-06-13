@@ -16,7 +16,7 @@ $transactional = true;
 /** @var \Ashrafi\WalletManager\Contracts\iUser $user */
 $user = \Illuminate\Support\Facades\Auth::user();
 
-$account = \Ashrafi\WalletManager\Facades\AccountModel::whereUser($user->id)->whereType('default')->first();
+$account = \Ashrafi\WalletManager\Facades\AccountModel::whereUser($user->getKey())->whereType('default')->first();
 $currency = \Ashrafi\WalletManager\Facades\CurrencyModel::whereSymbol('USD')->first();
 
 /** @var \Ashrafi\WalletManager\Models\Wallet $wallet */

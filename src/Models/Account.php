@@ -58,7 +58,7 @@ class Account extends Model
     }
 
     public function scopeWhereUser($builder, $user){
-        return $builder->where(['user_id' => ($user instanceof User) ? $user->id : $user]);
+        return $builder->where(['user_id' => ($user instanceof User) ? $user->getKey() : $user]);
     }
 
     public function wallets(){

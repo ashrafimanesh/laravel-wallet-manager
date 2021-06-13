@@ -49,7 +49,7 @@ class BankReceiptTransaction extends Model implements iRelatedTransactionTypeCre
     public function done(User $doneBy)
     {
         $this->status = WalletTransaction::STATUS_APPROVED;
-        $this->changed_by = $doneBy->id;
+        $this->changed_by = $doneBy->getKey();
         $this->save();
     }
 

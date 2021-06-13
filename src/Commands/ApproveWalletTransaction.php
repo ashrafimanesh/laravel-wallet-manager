@@ -60,7 +60,7 @@ class ApproveWalletTransaction extends Command
             'field' => 'status',
             'from_value' => $oldStatus,
             'to_value' => $walletTransaction->status,
-            'done_by' => $doneBy->id
+            'done_by' => $doneBy->getKey()
         ]);
 
         if($walletTransaction->amount < 0){
@@ -74,7 +74,7 @@ class ApproveWalletTransaction extends Command
                 'field' => 'wallet.freeze_balance',
                 'from_value' => $oldFreeze,
                 'to_value' => $wallet->freeze_balance,
-                'done_by' => $doneBy->id
+                'done_by' => $doneBy->getKey()
             ]);
 
         }
