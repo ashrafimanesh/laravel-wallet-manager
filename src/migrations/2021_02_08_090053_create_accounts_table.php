@@ -15,7 +15,6 @@ class CreateAccountsTable extends Migration
     public function up()
     {
         Schema::create(AccountModel::getTable(), function (Blueprint $table) {
-            $userTableName = app(\Ashrafi\WalletManager\Contracts\iUser::class)->getTable();
             $table->bigIncrements('id');
 
             $table->string('name', 128);
@@ -23,12 +22,10 @@ class CreateAccountsTable extends Migration
             $table->string('type', 64)->default(AccountModel::defaultType());
 
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on($userTableName);
 
             $table->tinyInteger('status')->default(AccountModel::defaultStatus());
 
             $table->unsignedBigInteger('locked_by')->nullable();
-            $table->foreign('locked_by')->references('id')->on($userTableName);
 
             $table->text('config')->nullable();
 

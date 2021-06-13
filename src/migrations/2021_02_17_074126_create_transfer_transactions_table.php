@@ -18,11 +18,9 @@ class CreateTransferTransactionsTable extends Migration
     public function up()
     {
         Schema::create(TransferTransactionModel::getTable(), function (Blueprint $table) {
-            $user = app(\Ashrafi\WalletManager\Contracts\iUser::class);
             $table->bigIncrements('id');
 
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->on($user->getTable())->references('id');
 
             $table->unsignedBigInteger('wallet_id');
             $table->foreign('wallet_id')->on(WalletModel::getTable())->references('id');
@@ -38,7 +36,6 @@ class CreateTransferTransactionsTable extends Migration
             $table->text('payload')->nullable();
 
             $table->unsignedBigInteger('changed_by')->nullable();
-            $table->foreign('changed_by')->references('id')->on($user->getTable());
 
             $table->timestamps();
         });

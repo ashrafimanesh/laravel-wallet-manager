@@ -17,7 +17,6 @@ class CreateBankReceiptTransactionsTable extends Migration
     public function up()
     {
         Schema::create(BankReceiptTransactionModel::getTable(), function (Blueprint $table) {
-            $userTableName = app(\Ashrafi\WalletManager\Contracts\iUser::class)->getTable();
 
             $table->bigIncrements('id');
 
@@ -25,13 +24,10 @@ class CreateBankReceiptTransactionsTable extends Migration
             $table->foreign('wallet_id')->references('id')->on(WalletModel::getTable());
 
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on($userTableName);
 
             $table->unsignedBigInteger('creator_id')->nullable();
-            $table->foreign('creator_id')->references('id')->on($userTableName);
 
             $table->unsignedBigInteger('changed_by')->nullable();
-            $table->foreign('changed_by')->references('id')->on($userTableName);
 
             $table->double('amount');
             $table->timestamp('pay_date')->nullable();

@@ -17,11 +17,9 @@ class CreateWalletsTable extends Migration
     public function up()
     {
         Schema::create(WalletModel::getTable(), function (Blueprint $table) {
-            $userTableName = app(\Ashrafi\WalletManager\Contracts\iUser::class)->getTable();
 
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on($userTableName);
 
             $table->unsignedBigInteger('currency_id');
             $table->foreign('currency_id')->references('id')->on(CurrencyModel::getTable());
@@ -33,12 +31,10 @@ class CreateWalletsTable extends Migration
             $table->foreign('account_id')->references('id')->on(AccountModel::getTable());
 
             $table->unsignedBigInteger('creator_id')->nullable();
-            $table->foreign('creator_id')->references('id')->on($userTableName);
 
             $table->tinyInteger('status')->default(WalletModel::defaultStatus());
 
             $table->unsignedBigInteger('locked_by')->nullable();
-            $table->foreign('locked_by')->references('id')->on($userTableName);
 
             $table->text('config')->nullable();
 

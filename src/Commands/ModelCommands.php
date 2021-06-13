@@ -25,7 +25,7 @@ class ModelCommands
         $model->locked_at = Carbon::now();
         $model->locked_description = $lockDescription;
         if($lockedBy){
-            $model->locked_by = ($lockedBy instanceof User) ? $lockedBy->id : $lockedBy;
+            $model->locked_by = ($lockedBy instanceof User) ? $lockedBy->getKey() : $lockedBy;
         }
         $success = true;
         if($save){
